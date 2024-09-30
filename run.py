@@ -55,7 +55,7 @@ parser.add_argument('--gpu-index', default=0, type=int, help='Gpu index.')
 def main():
     args = parser.parse_args()
     print(args)
-    
+
     assert args.n_views == 2, "Only two view training is supported. Please use --n-views 2."
     # check if gpu training is available
     if not args.disable_cuda and torch.cuda.is_available():
@@ -89,6 +89,8 @@ def main():
     with torch.cuda.device(args.gpu_index):
         simclr = SimCLR(model=model, optimizer=optimizer, scheduler=scheduler, args=args)
         simclr.train(train_loader)
+
+    torch.save(model.state_dict(), "model.pth")
 
 
 if __name__ == "__main__":
