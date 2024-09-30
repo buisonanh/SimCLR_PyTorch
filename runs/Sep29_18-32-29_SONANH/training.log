@@ -1,0 +1,7 @@
+INFO:root:Start SimCLR training for 200 epochs.
+INFO:root:Training with gpu: False.
+DEBUG:root:Epoch: 0	Loss: 5.408550262451172	Top1 accuracy: 1.5625
+DEBUG:root:Epoch: 1	Loss: 5.055325508117676	Top1 accuracy: 10.15625
+DEBUG:root:Epoch: 2	Loss: 4.842347145080566	Top1 accuracy: 16.796875
+DEBUG:root:Epoch: 3	Loss: 4.6000542640686035	Top1 accuracy: 15.234375
+DEBUG:root:Epoch: 4	Loss: 4.216873645782471	Top1 accuracy: 19.3359375
