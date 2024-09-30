@@ -54,6 +54,8 @@ parser.add_argument('--gpu-index', default=0, type=int, help='Gpu index.')
 
 def main():
     args = parser.parse_args()
+    print(args)
+    
     assert args.n_views == 2, "Only two view training is supported. Please use --n-views 2."
     # check if gpu training is available
     if not args.disable_cuda and torch.cuda.is_available():
@@ -75,7 +77,7 @@ def main():
         num_workers=args.workers, pin_memory=True, drop_last=True)
 
     print("Dataset and DataLoader initialized.")
-    
+
     model = ResNetSimCLR(base_model=args.arch, out_dim=args.out_dim)
 
     optimizer = torch.optim.Adam(model.parameters(), args.lr, weight_decay=args.weight_decay)
