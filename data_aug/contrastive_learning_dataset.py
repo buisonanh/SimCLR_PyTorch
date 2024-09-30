@@ -37,7 +37,7 @@ class ContrastiveLearningDataset:
                                                             n_views),
                                                         download=True),
                                                         
-                        'vggface2': lambda: datasets.ImageFolder(self.root_folder + '/VGG2/train',
+                        'vggface2': lambda: datasets.ImageFolder(self.root_folder + '/train',
                                                         transform=ContrastiveLearningViewGenerator(
                                                             self.get_simclr_pipeline_transform(224),  # Assuming 224x224 image size
                                                             n_views))
