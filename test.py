@@ -32,6 +32,7 @@ for epoch in range(10):
     for i, (images, labels) in enumerate(train_loader):
         optimizer.zero_grad()
         images = images.to(device)
+        labels = labels.to(device)
         outputs = net(images)
         loss = nn.CrossEntropyLoss()(outputs, labels)
         loss.backward()
@@ -45,6 +46,7 @@ for epoch in range(10):
     with torch.no_grad():
         for images, labels in test_loader:
             images = images.to(device)
+            labels = labels.to(device)
             outputs = net(images)
             _, predicted = torch.max(outputs.data, 1)
             total += labels.size(0)
