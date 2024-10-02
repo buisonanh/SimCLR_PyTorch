@@ -4,6 +4,10 @@ import shutil
 import torch
 import yaml
 
+import subprocess
+import os
+import shutil
+
 
 def save_checkpoint(state, is_best, filename='checkpoint.pth.tar'):
     torch.save(state, filename)
@@ -33,3 +37,32 @@ def accuracy(output, target, topk=(1,)):
             correct_k = correct[:k].reshape(-1).float().sum(0, keepdim=True)
             res.append(correct_k.mul_(100.0 / batch_size))
         return res
+
+
+
+def install_package(package):
+    subprocess.check_call(["pip", "install", package])
+
+def download_file(file_id, output_name):
+    install_package("gdown")
+    import gdown
+    gdown.download(id=file_id, output=output_name, quiet=False)
+
+def unzip_file(zip_file):
+    import zipfile
+    with zipfile.ZipFile(zip_file, 'r') as zip_ref:
+        zip_ref.extractall()
+    os.remove(zip_file)
+
+def remove_directory(directory):
+    if os.path.exists(directory):
+        shutil.rmtree(directory)
+
+
+
+if __name__ == "__main__":
+    download_file('1LShk6tZlsdBO-DciChK7y7nivUOvTAFk', 'FERPlus.zip')
+    unzip_file('FERPlus.zip')
+    remove_directory('fer_plus/train/contempt')
+    remove_directory('fer_plus/val/contempt')
+    remove_directory('fer_plus/test/contempt')
