@@ -5,7 +5,7 @@ import torchvision.datasets
 import tqdm._tqdm as tqdm
 from data_aug.contrastive_learning_dataset import ContrastiveLearningDataset
 
-state_dict = torch.load("checkpoints\checkpoint_0002.pth.tar", map_location=torch.device('cpu'))
+state_dict = torch.load("checkpoints\checkpoint_0002.pth.tar")
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
