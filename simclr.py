@@ -19,7 +19,7 @@ class SimCLR(object):
         self.model = kwargs['model'].to(self.args.device)
         self.optimizer = kwargs['optimizer']
         self.scheduler = kwargs['scheduler']
-        self.writer = SummaryWriter()
+        self.writer = SummaryWriter(log_dir=self.args.log_dir)
         logging.basicConfig(filename=os.path.join(self.writer.log_dir, 'training.log'), level=logging.DEBUG)
         self.criterion = torch.nn.CrossEntropyLoss().to(self.args.device)
 
@@ -54,7 +54,7 @@ class SimCLR(object):
         logits = logits / self.args.temperature
         return logits, labels
 
-    def train(self, train_loader):
+    def train(self, train_loader, start_epoch, start_iteration):
 
         scaler = GradScaler(enabled=self.args.fp16_precision)
 
@@ -66,7 +66,10 @@ class SimCLR(object):
         logging.info(f"Training with gpu: {self.args.disable_cuda}.")
 
         for epoch_counter in range(self.args.epochs):
-            for images, _ in tqdm(train_loader):
+            for batch_idx, images, _ in tqdm(enumerate(train_loader)):
+                if epoch_counter <= start_epoch and batch_idx < start_iteration:
+                    continue
+
                 images = torch.cat(images, dim=0)
 
                 images = images.to(self.args.device)
@@ -90,6 +93,18 @@ class SimCLR(object):
                     self.writer.add_scalar('acc/top5', top5[0], global_step=n_iter)
                     self.writer.add_scalar('learning_rate', self.scheduler.get_lr()[0], global_step=n_iter)
 
+                    # save model checkpoints
+                    checkpoint_name = 'checkpoint_{:04d}.pth.tar'.format(self.args.epochs)
+                    save_checkpoint({
+                        'epoch': self.args.epochs,
+                        'iter': n_iter,
+                        'arch': self.args.arch,
+                        'state_dict': self.model.state_dict(),
+                        'optimizer': self.optimizer.state_dict(),
+                        'scheduler': self.scheduler.state_dict(),
+                    }, is_best=False, filename=os.path.join(self.writer.log_dir, checkpoint_name))
+                    logging.info(f"Model checkpoint and metadata has been saved at {self.writer.log_dir}.")
+
                 n_iter += 1
 
             # warmup for the first 10 epochs
@@ -98,12 +113,4 @@ class SimCLR(object):
             logging.debug(f"Epoch: {epoch_counter}\tLoss: {loss}\tTop1 accuracy: {top1[0]}")
 
         logging.info("Training has finished.")
-        # save model checkpoints
-        checkpoint_name = 'checkpoint_{:04d}.pth.tar'.format(self.args.epochs)
-        save_checkpoint({
-            'epoch': self.args.epochs,
-            'arch': self.args.arch,
-            'state_dict': self.model.state_dict(),
-            'optimizer': self.optimizer.state_dict(),
-        }, is_best=False, filename=os.path.join(self.writer.log_dir, checkpoint_name))
-        logging.info(f"Model checkpoint and metadata has been saved at {self.writer.log_dir}.")
+        
