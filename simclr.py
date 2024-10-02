@@ -54,7 +54,7 @@ class SimCLR(object):
         logits = logits / self.args.temperature
         return logits, labels
 
-    def train(self, train_loader, start_epoch, start_iteration):
+    def train(self, train_loader, sstart_iteratiotart_epoch=0, n=0):
 
         scaler = GradScaler(enabled=self.args.fp16_precision)
 
