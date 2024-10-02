@@ -5,6 +5,8 @@ from torchvision import models
 from data_aug.contrastive_learning_dataset import ContrastiveLearningDataset
 from models.resnet_simclr import ResNetSimCLR
 from simclr import SimCLR
+import numpy as np
+import random
 
 model_names = sorted(name for name in models.__dict__
                     if name.islower() and not name.startswith("__")
@@ -61,6 +63,9 @@ def main():
     if not args.disable_cuda and torch.cuda.is_available():
         args.device = torch.device('cuda')
         cudnn.deterministic = True
+        torch.manual_seed(64)
+        np.random.seed(64)
+        random.seed(64)
         cudnn.benchmark = True
     else:
         args.device = torch.device('cpu')
