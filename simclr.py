@@ -1,6 +1,7 @@
 import logging
 import os
 import sys
+import datetime
 
 import torch
 import torch.nn.functional as F
@@ -94,7 +95,8 @@ class SimCLR(object):
                     self.writer.add_scalar('learning_rate', self.scheduler.get_lr()[0], global_step=n_iter)
 
                     # save model checkpoints
-                    checkpoint_name = 'checkpoint_{:04d}.pth.tar'.format(self.args.epochs)
+                    current_time = datetime.datetime.now().strftime('%d%m%Y_%H%M')
+                    checkpoint_name = f'checkpoint_{self.args.epochs:03d}_{current_time}.pth.tar'
                     save_checkpoint({
                         'epoch': self.args.epochs,
                         'iter': n_iter,
