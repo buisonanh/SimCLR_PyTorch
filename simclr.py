@@ -54,7 +54,7 @@ class SimCLR(object):
         logits = logits / self.args.temperature
         return logits, labels
 
-    def train(self, train_loader, sstart_iteratiotart_epoch=0, n=0):
+    def train(self, train_loader, start_epoch=0, start_iteration=0):
 
         scaler = GradScaler(enabled=self.args.fp16_precision)
 
@@ -66,7 +66,7 @@ class SimCLR(object):
         logging.info(f"Training with gpu: {self.args.disable_cuda}.")
 
         for epoch_counter in range(self.args.epochs):
-            for batch_idx, images, _ in tqdm(enumerate(train_loader)):
+            for batch_idx, (images, _) in tqdm(enumerate(train_loader)):
                 if epoch_counter <= start_epoch and batch_idx < start_iteration:
                     continue
 
