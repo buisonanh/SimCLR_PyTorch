@@ -2,7 +2,7 @@ from models.resnet_simclr import ResNetSimCLR
 import torch
 import torch.nn as nn
 import torchvision.datasets
-import tqdm._tqdm as tqdm
+from tqdm import tqdm
 from data_aug.contrastive_learning_dataset import ContrastiveLearningDataset
 
 state_dict = torch.load("checkpoints\checkpoint_0002.pth.tar")
@@ -21,15 +21,15 @@ net.to(device)
 trainset = torchvision.datasets.ImageFolder("fer_plus/train", transform=ContrastiveLearningDataset.get_simclr_pipeline_transform(224))
 testset = torchvision.datasets.ImageFolder("fer_plus/test", transform=ContrastiveLearningDataset.get_simclr_pipeline_transform(224))
 
-train_loader = torch.utils.data.DataLoader(dataset=trainset, batch_size=128, shuffle=True)
-test_loader = torch.utils.data.DataLoader(dataset=testset, batch_size=128, shuffle=False)
+train_loader = torch.utils.data.DataLoader(dataset=trainset, batch_size=512, shuffle=True, num_workers=2)
+test_loader = torch.utils.data.DataLoader(dataset=testset, batch_size=512, shuffle=False, num_workers=2)
 
 
 optimizer = torch.optim.Adam(net.parameters(), lr=0.01, weight_decay=5e-4)
 
 for epoch in range(10):
     net.train()
-    for i, (images, labels) in enumerate(train_loader):
+    for i, (images, labels) in tqdm(enumerate(train_loader)):
         optimizer.zero_grad()
         images = images.to(device)
         labels = labels.to(device)
@@ -44,7 +44,7 @@ for epoch in range(10):
     correct = 0
     total = 0
     with torch.no_grad():
-        for images, labels in test_loader:
+        for images, labels in tqdm(test_loader):
             images = images.to(device)
             labels = labels.to(device)
             outputs = net(images)
