@@ -61,8 +61,15 @@ def remove_directory(directory):
 
 
 if __name__ == "__main__":
+    # FER2013
+    download_file('1YBuZaO7morIG43trYi0qtdelYGukBNCj', 'FER2013.zip')
+    unzip_file('FER2013.zip')
+    
+    """
+    # FERPlus
     download_file('1LShk6tZlsdBO-DciChK7y7nivUOvTAFk', 'FERPlus.zip')
     unzip_file('FERPlus.zip')
     remove_directory('fer_plus/train/contempt')
     remove_directory('fer_plus/val/contempt')
     remove_directory('fer_plus/test/contempt')
+    """

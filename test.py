@@ -24,8 +24,8 @@ def main():
     net = nn.Sequential(model, nn.Linear(128, 7))
     net.to(device)
 
-    trainset = torchvision.datasets.ImageFolder("fer_plus/train", transform=ContrastiveLearningDataset.get_simclr_pipeline_transform(224))
-    testset = torchvision.datasets.ImageFolder("fer_plus/test", transform=ContrastiveLearningDataset.get_simclr_pipeline_transform(224))
+    trainset = torchvision.datasets.ImageFolder("org_fer2013/train", transform=ContrastiveLearningDataset.get_simclr_pipeline_transform(224))
+    testset = torchvision.datasets.ImageFolder("org_fer2013/test", transform=ContrastiveLearningDataset.get_simclr_pipeline_transform(224))
 
     train_loader = torch.utils.data.DataLoader(dataset=trainset, batch_size=512, shuffle=True, num_workers=2)
     test_loader = torch.utils.data.DataLoader(dataset=testset, batch_size=512, shuffle=False, num_workers=2)
